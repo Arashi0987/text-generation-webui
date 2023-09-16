@@ -6,6 +6,7 @@ from modules import shared
 
 
 def setup():
+    print("setup in script.py got called")
     blocking_api.start_server(shared.args.api_blocking_port, share=shared.args.public_api, tunnel_id=shared.args.public_api_id)
     if shared.args.public_api:
         time.sleep(5)

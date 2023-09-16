@@ -18,7 +18,7 @@ api_tls = threading.local()
 
 
 def build_parameters(body, chat=False):
-
+    print("build_parameters in util got called MAID")
     generate_params = {
         'max_new_tokens': int(body.get('max_new_tokens', body.get('max_length', 200))),
         'auto_max_new_tokens': bool(body.get('auto_max_new_tokens', False)),

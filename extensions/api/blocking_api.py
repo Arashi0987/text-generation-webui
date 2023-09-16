@@ -17,6 +17,7 @@ from modules.utils import get_available_models
 
 
 def get_model_info():
+    #print("get_model_info got called MAID")
     return {
         'model_name': shared.model_name,
         'lora_names': shared.lora_names,
@@ -28,6 +29,7 @@ def get_model_info():
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        print("do_GET got called MAID")
         if self.path == '/api/v1/model':
             self.send_response(200)
             self.end_headers()
@@ -37,9 +39,11 @@ class Handler(BaseHTTPRequestHandler):
 
             self.wfile.write(response.encode('utf-8'))
         else:
+            print("we hit the one above do_POST")
             self.send_error(404)
 
     def do_POST(self):
+        print("do_POST actually got called MAID")
         content_length = int(self.headers['Content-Length'])
         body = json.loads(self.rfile.read(content_length).decode('utf-8'))
 
@@ -183,6 +187,7 @@ class Handler(BaseHTTPRequestHandler):
 
             self.wfile.write(response.encode('utf-8'))
         else:
+            print("we hit the one above do_OPTIONS")
             self.send_error(404)
 
     def do_OPTIONS(self):
@@ -198,6 +203,7 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def _run_server(port: int, share: bool = False, tunnel_id=str):
+    print("_run_server ins blocking_api IS RUNNING BOOYAH MAID")
     address = '0.0.0.0' if shared.args.listen else '127.0.0.1'
 
     server = ThreadingHTTPServer((address, port), Handler)
@@ -218,4 +224,5 @@ def _run_server(port: int, share: bool = False, tunnel_id=str):
 
 
 def start_server(port: int, share: bool = False, tunnel_id=str):
+    print("start_server in blocking_api got called MAID")
     Thread(target=_run_server, args=[port, share, tunnel_id], daemon=True).start()

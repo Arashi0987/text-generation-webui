@@ -17,6 +17,7 @@ PATH = '/api/v1/stream'
 
 @with_api_lock
 async def _handle_stream_message(websocket, message):
+    print("_handle_stream_message in streaming_api got called MAID")
     message = json.loads(message)
 
     prompt = message['prompt']
@@ -54,6 +55,7 @@ async def _handle_stream_message(websocket, message):
 
 @with_api_lock
 async def _handle_chat_stream_message(websocket, message):
+    print("_handle_chat_stream_message in streaming_api got called MAID")
     body = json.loads(message)
 
     user_input = body['user_input']
@@ -66,16 +68,23 @@ async def _handle_chat_stream_message(websocket, message):
         user_input, generate_params, regenerate=regenerate, _continue=_continue, loading_message=False)
 
     message_num = 0
+    #try:    
+    #print("intended response was:")
+    #print(a)
     for a in generator:
         await websocket.send(json.dumps({
             'event': 'text_stream',
             'message_num': message_num,
             'history': a
         }))
+    await asyncio.sleep(0)
+    message_num += 1
 
-        await asyncio.sleep(0)
-        message_num += 1
-
+ #   except Exception as e:
+ #       print("WE CAUGHT THE ERROR")
+ #       print(e)
+    
+    
     await websocket.send(json.dumps({
         'event': 'stream_end',
         'message_num': message_num
@@ -83,7 +92,7 @@ async def _handle_chat_stream_message(websocket, message):
 
 
 async def _handle_connection(websocket, path):
-
+    print("handle_connection got called MAID")
     if path == '/api/v1/stream':
         async for message in websocket:
             await _handle_stream_message(websocket, message)
@@ -98,11 +107,13 @@ async def _handle_connection(websocket, path):
 
 
 async def _run(host: str, port: int):
+    print("_run in streaming_api got called MAID")
     async with serve(_handle_connection, host, port, ping_interval=None):
         await asyncio.Future()  # run forever
 
 
 def _run_server(port: int, share: bool = False, tunnel_id=str):
+    print("_run_server in streaming_api got called MAID")
     address = '0.0.0.0' if shared.args.listen else '127.0.0.1'
 
     def on_start(public_url: str):
