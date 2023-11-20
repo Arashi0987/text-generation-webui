@@ -18,15 +18,16 @@ torch._C._jit_set_profiling_mode(False)
 
 # parameters which can be customized in settings.json of webui
 params = {
-    'address': 'http://127.0.0.1:7860',
-    'mode': 0,  # modes of operation: 0 (Manual only), 1 (Immersive/Interactive - looks for words to trigger), 2 (Picturebook Adventure - Always on)
+    'address': 'http://172.22.0.2:7860',
+    #'address': 'http://192.168.1.94:7860',
+    'mode': 1,  # modes of operation: 0 (Manual only), 1 (Immersive/Interactive - looks for words to trigger), 2 (Picturebook Adventure - Always on)
     'manage_VRAM': False,
     'save_img': False,
     'SD_model': 'NeverEndingDream',  # not used right now
     'prompt_prefix': '(Masterpiece:1.1), detailed, intricate, colorful',
-    'negative_prompt': '(worst quality, low quality:1.3)',
-    'width': 512,
-    'height': 512,
+    'negative_prompt': 'blurry, (worst quality, low quality:1.3)',
+    'width': 1024,
+    'height': 1024,
     'denoising_strength': 0.61,
     'restore_faces': False,
     'enable_hr': False,
@@ -34,7 +35,7 @@ params = {
     'hr_scale': '1.0',
     'seed': -1,
     'sampler_name': 'DPM++ 2M Karras',
-    'steps': 32,
+    'steps': 50,
     'cfg_scale': 7,
     'textgen_prefix': 'Please provide a detailed and vivid description of [subject]',
     'sd_checkpoint': ' ',
@@ -129,7 +130,7 @@ def input_modifier(string):
 def get_SD_pictures(description, character):
 
     global params
-
+    print("MAID character print: " + character)
     if params['manage_VRAM']:
         give_VRAM_priority('SD')
 
@@ -215,9 +216,10 @@ def output_modifier(string, state):
         text = f'*Sends a picture which portrays: “{string}”*'
     else:
         text = string
-
-    string = get_SD_pictures(string, state['character_menu']) + "\n" + text
-
+    try:
+        string = get_SD_pictures(string, state['character_menu']) + "\n" + text
+    except:
+        string = get_SD_pictures(string, "Maid") + "\n" + text
     return string
 
 
